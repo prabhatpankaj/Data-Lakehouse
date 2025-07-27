@@ -1,5 +1,6 @@
 # Data-Lakehouse
 
+```
 project-root/
 ├── docker-compose.yaml
 ├── .env
@@ -10,9 +11,10 @@ project-root/
     └── superset/
          └── superset_env.sh
 
-
+```
 * .env
 
+```
 AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_KEY
 AWS_REGION=us-east-1
@@ -24,6 +26,9 @@ WAREHOUSE=s3a://your-iceberg-bucket/
 # Superset-specific variables
 SUPERSET_DATABASE_TRINO_CONN=trino://trino@trino:8080/nessie/main
 
+```
+
+```
 MongoDB/MySQL
        ↓
     Airbyte (connectors, mapping, sync logic)
@@ -31,3 +36,5 @@ MongoDB/MySQL
 S3 Iceberg tables (tracked via Nes­sie catalog)
        ↓
 Trino / Dremio / Superset for query & dashboards
+
+```
