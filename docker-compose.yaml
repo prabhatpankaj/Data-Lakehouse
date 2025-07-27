@@ -1,0 +1,80 @@
+version: "3.9"
+services:
+  nessie:
+    image: projectnessie/nessie:latest
+    container_name: nessie
+    ports:
+      - "19120:19120"
+
+  trino:
+    image: trinodb/trino:latest
+    container_name: trino
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/trino:/etc/trino
+
+  superset:
+    image: apache/superset:latest
+    container_name: superset
+    ports:
+      - "8088:8088"
+    env_file:
+      - .env
+    depends_on:
+      - trino
+    volumes:
+      - ./config/superset:/app/pythonpath
+
+  airbyte:
+    image: airbyte/bootloader:0.56.0
+    container_name: airbyte-bootloader
+    environment:
+      DATABASE_URL: jdbc:postgresql://airbyte-db:5432/airbyte
+      DATABASE_USER: airbyte
+      DATABASE_PASSWORD: password
+    depends_on:
+      - airbyte-db
+
+  airbyte-db:
+    image: postgres:13-alpine
+    container_name: airbyte-db
+    environment:
+      POSTGRES_USER: airbyte
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: airbyte
+    volumes:
+      - airbyte_db_data:/var/lib/postgresql/data
+
+  airbyte-server:
+    image: airbyte/server:0.56.0
+    container_name: airbyte-server
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: jdbc:postgresql://airbyte-db:5432/airbyte
+      DATABASE_USER: airbyte
+      DATABASE_PASSWORD: password
+    depends_on:
+      - airbyte-bootloader
+
+  airbyte-webapp:
+    image: airbyte/webapp:0.56.0
+    container_name: airbyte-webapp
+    ports:
+      - "8000:80"
+    depends_on:
+      - airbyte-server
+
+  airbyte-worker:
+    image: airbyte/worker:0.56.0
+    container_name: airbyte-worker
+    depends_on:
+      - airbyte-server
+
+volumes:
+  airbyte_db_data:
+
+networks:
+  default:
+    driver: bridge
