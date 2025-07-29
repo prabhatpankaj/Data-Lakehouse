@@ -11,8 +11,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./config/trino:/etc/trino
-
+      - ./config/trino/catalog/nessie.properties:/etc/trino/catalog/nessie.properties
+    env_file:
+      - .env
   superset:
     image: apache/superset:latest
     container_name: superset
@@ -54,6 +55,10 @@ services:
       DATABASE_URL: jdbc:postgresql://airbyte-db:5432/airbyte
       DATABASE_USER: airbyte
       DATABASE_PASSWORD: password
+      WORKSPACE_ROOT: /data/workspace
+      TEMPORAL_HOST: localhost:7233
+    volumes:
+      - airbyte_workspace:/data/workspace
     depends_on:
       - airbyte-bootloader
 
@@ -73,6 +78,7 @@ services:
 
 volumes:
   airbyte_db_data:
+  airbyte_workspace:
 
 networks:
   default:

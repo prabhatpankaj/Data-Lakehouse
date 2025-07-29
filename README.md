@@ -38,3 +38,16 @@ S3 Iceberg tables (tracked via Nes­sie catalog)
 Trino / Dremio / Superset for query & dashboards
 
 ```
+
+
+connector.name=iceberg
+iceberg.catalog.type=nessie
+iceberg.nessie-catalog.uri=http://nessie:19120/api/v1
+iceberg.nessie-catalog.default-warehouse-dir=${WAREHOUSE}
+iceberg.file-format=PARQUET
+
+# AWS S3 credentials
+hive.s3.aws-access-key=${AWS_ACCESS_KEY_ID}
+hive.s3.aws-secret-key=${AWS_SECRET_ACCESS_KEY}
+hive.s3.region=${AWS_REGION}
+fs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
