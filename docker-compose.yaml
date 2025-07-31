@@ -39,6 +39,7 @@ services:
       PERSISTENT_DIR: *hostPersistencePath
       POSTGRES_DB: "postgres://olake:olake@postgresql:5432/olakedb"
       OLAKE_SECRET_KEY: *encryptionKey
+      LOG_RETENTION_PERIOD: "15d" # Retain logs for 15 days
     ports:
       - "8000:8000" # Expose UI port
       - "8080:8080" # Expose backend API port
